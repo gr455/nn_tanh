@@ -65,14 +65,15 @@ class NeuralNetwork:
 
     # x is a matrix, y is a vector
     def mean_loss(self, x, y):
-        outputs = np.array([self.forward(x[i])[-1] for i in range(x.shape[0])]).flatten()
-        return np.mean((outputs - y) ** 2)
+        outputs = np.array([self.forward(x[i])[-1] for i in range(x.shape[0])])
+        # print(f"Outputs shape: {outputs.shape}, Y shape: {y.shape}")
+        return np.mean(np.linalg.norm(outputs - y, axis=1) ** 2)
 
 if __name__ == "__main__":
-    nn = NeuralNetwork([10, 20, 1])
+    nn = NeuralNetwork([10, 20, 10])
     x = np.random.rand(100, 9)
     x = np.hstack([x, np.ones((100, 1))])  # Add bias column of 1s
-    y = np.random.rand(100, 1)
+    y = np.random.rand(100, 10)
     nn.train(x, y, epochs=8000, learning_rate=0.00001)
     print("Final loss:", nn.mean_loss(x, y))
     print("Weights:", nn.weights)
