@@ -39,14 +39,17 @@ class NeuralNetwork:
         return all_x
  
     def back(self, all_x, y, learning_rate=0.01):
-        delta = np.array([(all_x[-1][0] - y) * (1 - all_x[-1][0] ** 2)]).reshape(-1, 1)
+        delta = np.array([(all_x[-1] - y) * (1 - all_x[-1] ** 2)]).reshape(-1, 1)
         # print (f"all x shape: {[np.shape(x) for x in all_x]}")
         for i in range (len(self.layers) - 1, 0, -1):
+            # print (f"Delta shape for layer {i}: {np.shape(delta)}")
+            # print (f"all_x shape for layer {i}: {np.shape(all_x[i - 1].reshape(-1, 1))}")
+            # Calculate weight gradient
             weight_gradmat = delta @ all_x[i - 1].reshape(-1, 1).T
             # print (f"Weight gradient for layer {i}: {np.shape(weight_gradmat)}")
             # print (f"weights before update for layer {i}: {np.shape(self.weights[i])}")
             self.weights[i] -= learning_rate * weight_gradmat.T
-            delta = np.dot(self.weights[i], delta) * (1 - all_x[i - 1][0]**2)
+            delta = (self.weights[i] @ delta) * (1 - all_x[i - 1].reshape(-1, 1) ** 2)
 
     def activation(self, s):
         return self.tanh(s)
@@ -67,7 +70,8 @@ class NeuralNetwork:
 
 if __name__ == "__main__":
     nn = NeuralNetwork([10, 20, 1])
-    x = np.random.rand(100, 10)
+    x = np.random.rand(100, 9)
+    x = np.hstack([x, np.ones((100, 1))])  # Add bias column of 1s
     y = np.random.rand(100, 1)
     nn.train(x, y, epochs=8000, learning_rate=0.00001)
     print("Final loss:", nn.mean_loss(x, y))
