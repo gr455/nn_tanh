@@ -54,7 +54,7 @@ class NeuralNetwork:
     def activation(self, s):
         return self.tanh(s)
     
-    def ddx_activation(s):
+    def ddx_activation(self, s):
         return self.ddx_tanh(s)
 
     def tanh(self, s):
@@ -70,10 +70,10 @@ class NeuralNetwork:
         return np.mean(np.linalg.norm(outputs - y, axis=1) ** 2)
 
 if __name__ == "__main__":
-    nn = NeuralNetwork([10, 20, 10])
+    nn = NeuralNetwork([10, 20, 20, 10, 10])
     x = np.random.rand(100, 9)
     x = np.hstack([x, np.ones((100, 1))])  # Add bias column of 1s
     y = np.random.rand(100, 10)
-    nn.train(x, y, epochs=8000, learning_rate=0.00001)
+    nn.train(x, y, epochs=8000, learning_rate=0.001)
     print("Final loss:", nn.mean_loss(x, y))
     print("Weights:", nn.weights)
